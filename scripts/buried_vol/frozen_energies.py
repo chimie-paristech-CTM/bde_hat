@@ -39,31 +39,11 @@ def main_function():
     error = multiprocess_func(create_xyz_frozen_radical_parallel, paton_rxns.iloc, 70)
     os.chdir('../../xyz_frozen_paton_rad')
 
-    xyz_frozen_files = glob('*.xyz')
-    error = multiprocess_func(run_xtb, xyz_frozen_files, 15)
-    os.chdir('../scripts/buried_vol')
-
     all_bdfe_frozen = multiprocess_func(get_energy_parallel, paton_rxns.iloc, 70)
 
     paton_rxns['BDFE_fr'] = all_bdfe_frozen[0]
     paton_rxns = paton_rxns.loc[paton_rxns['BDFE_fr'] < 1000]
     paton_rxns.to_csv('../../data/paton_rxns_frozen_BDFE.csv')
-
-
-
-def run_xtb(file):
-
-    xtb_path = '/home/javialra/soft/xtb-6.6.0/bin'
-    xtb_command = os.path.join(xtb_path, 'xtb')
-
-    out_file = f"{file[:-4]}.log"
-
-    with open(out_file, 'w') as out:
-        subprocess.run(f"{xtb_command} {file} --cycles 1000 --chrg 0 -P 4 --uhf 1", shell=True, stdout=out, stderr=out)
-
-    subprocess.run('rm xtbrestart charges wbo xtbtopo.mol', shell=True)
-
-    return None
 
 
 def get_energy_molecule(data):
@@ -93,7 +73,6 @@ def get_energy_parallel(data):
     rad_energy = read_log(rad_file)
 
     bdfe_fr = ((rad_energy + hydrogen_rad_energy) - mol_energy) * 627.509
-    #output = (data.name, bdfe_fr)
 
     return bdfe_fr
 

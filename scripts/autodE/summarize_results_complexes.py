@@ -61,7 +61,7 @@ def check_copies() -> bool:
 
     os.chdir('../')
 
-    return True if files != 21 else False  # 23 because 8 .xyz + 1 .csv + 6 freq .log + 6 sp .log
+    return True if files != 23 else False  # 23 because 8 .xyz + 1 .csv + 6 freq .log + 6 sp .log
 
 
 def extract_time():

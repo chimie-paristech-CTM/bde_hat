@@ -130,10 +130,10 @@ def copy_xyz_files(idx: str, dst_dir: str) -> None:
             ts_name = ts
 
     if reac_complex:
-        shutil.copy(f"{reac_complex[0]}", f"{dst_dir}/{reac_complex[0].split('_')[1][:-4]}_complex_{idx}.xyz")
+        shutil.copy(f"{reac_complex[0]}", f"{dst_dir}/r_{reac_complex[0].split('_')[1][:-4]}_complex_{idx}.xyz")
 
     if prod_complex:
-        shutil.copy(f"{prod_complex[0]}", f"{dst_dir}/{prod_complex[0].split('_')[1][:-4]}_complex_{idx}.xyz")
+        shutil.copy(f"{prod_complex[0]}", f"{dst_dir}/p_{prod_complex[0].split('_')[1][:-4]}_complex_{idx}.xyz")
 
     copy_ts_file(idx, dst_dir, ts_name)
 
@@ -200,8 +200,13 @@ def copy_sp_files(idx: str, dst_dir: str) -> None:
 
     log_files = glob('*.log')
 
-    [shutil.copy(f"{file}", f"{dst_dir}/single_points_logs/{file.split('_')[0]}_{idx}_sp_g16.log") for file in
-     log_files]
+    for file in log_files:
+        if 'reactant' in file:
+            shutil.copy(f"{file}", f"{dst_dir}/single_points_logs/r_complex_{idx}_sp_g16.log")
+        elif 'product' in file:
+            shutil.copy(f"{file}", f"{dst_dir}/single_points_logs/p_complex_{idx}_sp_g16.log")
+        else:
+            shutil.copy(f"{file}", f"{dst_dir}/single_points_logs/{file.split('_')[0]}_{idx}_sp_g16.log")
 
     return None
 
@@ -214,7 +219,13 @@ def copy_freq_files(idx: str, dst_dir: str) -> None:
 
     log_files = glob('*.log')
 
-    [shutil.copy(f"{file}", f"{dst_dir}/frequency_logs/{file.split('_')[0]}_{idx}_hess_g16.log") for file in log_files]
+    for file in log_files:
+        if 'reactant' in file:
+            shutil.copy(f"{file}", f"{dst_dir}/frequency_logs/r_complex_{idx}_hess_g16.log")
+        elif 'product' in file:
+            shutil.copy(f"{file}", f"{dst_dir}/frequency_logs/p_complex_{idx}_hess_g16.log")
+        else:
+            shutil.copy(f"{file}", f"{dst_dir}/frequency_logs/{file.split('_')[0]}_{idx}_hess_g16.log")
 
     return None
 
