@@ -11,21 +11,11 @@ conda env create --name <env-name> --file environment.yml
 ### Requirements
 Comments about some libraries installed
 
-1. [BDE](https://github.com/pstjohn/bde)
-
-    Extracted and analyse radical dataset
-2. [Pebble](https://github.com/noxdafox/pebble)
-
-    Multiprocessing
-3. [DRFP](https://github.com/reymond-group/drfp)
-
-    Fingerprints generation
-4. [MORFEUS](https://github.com/digital-chemistry-laboratory/morfeus)
-
-    Calculation of buried volumes
-5. [autodE](https://github.com/duartegroup/autodE)
-
-    Calculation of reaction profiles.
+1. [BDE](https://github.com/pstjohn/bde): Extracted and analyse radical dataset
+2. [Pebble](https://github.com/noxdafox/pebble): Multiprocessing
+3. [DRFP](https://github.com/reymond-group/drfp): Fingerprints generation
+4. [MORFEUS](https://github.com/digital-chemistry-laboratory/morfeus): Calculation of buried volumes
+5. [autodE](https://github.com/duartegroup/autodE): Calculation of reaction profiles.
 
 Additionally, in order to execute the autodE high-throughput reaction profile computation workflow, Gaussian09/Gaussian16 and xTB needs to be accessible. 
 More information about the autodE module can be found [here](https://github.com/duartegroup/autodE).
@@ -33,7 +23,7 @@ More information about the autodE module can be found [here](https://github.com/
 ## Generating the search space and reaction SMILES
 
 The generation of the four datasets can be found in the `scripts/gen_datasets` directory. For the generation of the HAT chemical space, is necessary the
-[radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by [St. John et al.](https://doi-org/10.1038/s41597-020-00588-x) in the 
+[radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by [St. John et al.](https://doi.org/10.1038/s41597-020-00588-x) in the 
 `data` directory. Generating the chemical space and sampling a subset of representative reactions is done by:
 ```
 python generation_HAT.py
@@ -86,6 +76,18 @@ to avoid some wrong TS. The scripts below have also been included in this reposi
 
 ## Post-processing reaction SMILES
 
+## Tunneling correction
+
+The script for calculation of tunneling correction can be found in the same `scripts/autodE` directory and is `3_eckart_potential`. This 
+script is an adaptation of this [repo](https://github.com/SJ-Ang/PyTUN). Execution as follow:
+```
+python 3_eckart_potential.py
+```
+
+The script takes all the necessary information from the autodE resume directory(`autodE_input/0.autode_resume_dir`), the input is the 
+final .csv file of the post-processing step(`reactivity_database.csv`) and the output is `reactivity_database_corrected.csv`, both files
+can be found in the `data` directory.
+
 ## Baseline ML models
 
 All the files related to the baseline models are included in the `script/baseline_models` directory. The baseline_model.py script, 
@@ -95,7 +97,7 @@ python baseline_models.py [--csv-file <path to the file containing the rxn-smile
 ````
 
 For models based in fingerprints is only necessary the `csv-file` an for the models based in descriptors is only necessary 
-the `input-file`. The fingerprints are generated during the run and the [DRFP](https://doi-org/10.1039/D1DD00006C) fingerprint is used.
+the `input-file`. The fingerprints are generated during the run and the [DRFP](https://doi.org/10.1039/D1DD00006C) fingerprint is used.
 
 A version of both input files are included in the ``data`` directory: `reactivity_database_mapped.csv` and `input_ffnn.pkl`. To generate an input file from scratch, 
 you should use this [repo](https://github.com/chimie-paristech-CTM/energy_predictor_HAT).
