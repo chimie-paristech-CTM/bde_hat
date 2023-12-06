@@ -123,7 +123,7 @@ Once this step is done. The fr-BDE is computed using:
 python3 frozen_energies.py
 ````
 
-`frozen_energies.py` will start checking if all the optimization finished successfully and is there are minimum due the inspection
+`frozen_energies.py` will start checking if all the optimization finished successfully and if they are minimum due the inspection
 of the frequencies. Then it will generate the frozen radicals (remove a hydrogen) and will launch all the single points in a new directory 
 (`xyz_frozen_paton_rad`). The fr-BDE will be saved in `paton_rxns_fr.csv` file in the data directory. Those calculations can be found
 [here](https://figshare.com/articles/dataset/xTB_calc_paton_dataset_tar_gz/24721473).
