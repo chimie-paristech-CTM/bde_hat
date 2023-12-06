@@ -21,7 +21,6 @@ Additionally, in order to execute the autodE high-throughput reaction profile co
 More information about the autodE module can be found [here](https://github.com/duartegroup/autodE).
 
 ## Generating the search space and reaction SMILES
-
 The generation of the four datasets can be found in the `scripts/gen_datasets` directory. For the generation of the HAT chemical space, is necessary the
 [radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by [St. John et al.](https://doi.org/10.1038/s41597-020-00588-x) in the 
 `data` directory. Generating the chemical space and sampling a subset of representative reactions is done by:
@@ -36,7 +35,6 @@ By default, the script generates several `.csv` files in the `data` directory, t
 3. `reactions_1M.csv`, the chemical space.
 
 ## High-throughput reaction profile computation
-
 Input files for high-throughput reaction profile computations, based on the reaction SMILES outputted in the previous section, can be generated 
 with the help of the `0.calculations.py` script in the `scripts/autodE` directory as follows:
 
@@ -64,7 +62,7 @@ In our workflow, the `aux_script.py` is copied into each sub-directories and exe
 relevant files (.log, .xyz, .csv) to a new directory (`0.autode_resume_dir/<rxn_###>`). 
 
 To summarize all the results in a final .csv file, the `1_summarize_results.py` script is provided. It creates a .csv file containing the successfully 
-computed reaction SMILES together with the activition and reaction free energies(`autode_results.csv`). Execution as follow:
+computed reaction SMILES together with the activition and reaction free energies (`autode_results.csv`). Execution as follow:
 ```
 python 1_summarize_results.py
 ```
@@ -77,19 +75,17 @@ to avoid some wrong TS. The scripts below have also been included in this reposi
 ## Post-processing reaction SMILES
 
 ## Tunneling correction
-
 The script for calculation of tunneling correction can be found in the same `scripts/autodE` directory and is `3_eckart_potential`. This 
 script is an adaptation of this [repo](https://github.com/SJ-Ang/PyTUN). Execution as follow:
 ```
 python 3_eckart_potential.py
 ```
 
-The script takes all the necessary information from the autodE resume directory(`autodE_input/0.autode_resume_dir`), the input is the 
-final .csv file of the post-processing step(`reactivity_database.csv`), a new column labeled `dG_act_corrected` is added and the output is `reactivity_database_corrected.csv`, both files
+The script takes all the necessary information from the autodE resume directory (`autodE_input/0.autode_resume_dir`), the input is the 
+final .csv file of the post-processing step (`reactivity_database.csv`), a new column labeled `dG_act_corrected` is added and the output is `reactivity_database_corrected.csv`, both files
 can be found in the `data` directory. 
 
 ## Baseline ML models
-
 All the files related to the baseline models are included in the `script/baseline_models` directory. The baseline_model.py script, 
 which runs each of the baseline models sequentially, can be executed as follows:
 ````
@@ -101,6 +97,22 @@ the `input-file`. The fingerprints are generated during the run and the [DRFP](h
 
 A version of both input files are included in the ``data`` directory: `reactivity_database_mapped.csv` and `input_ffnn.pkl`. To generate an input file from scratch, 
 you should use this [repo](https://github.com/chimie-paristech-CTM/energy_predictor_HAT).
+
+## Compute additional descriptors
+Using the scripts in ``scripts/additional_desc_surrogate`` directory, the buried volume and the frozen bond dissociation energy (fr-BDE)
+were calculate.
+
+The first step is the calculation of the buried volume, execution as follow:
+````
+python3 buried_vol.py
+````
+
+This script will extract all the xyz-files from the radical database in the `xyz_paton` directory, create csv-files that map the 
+xyz-file with the smiles and calculate the buried volume using the [Morfeus](https://github.com/digital-chemistry-laboratory/morfeus) package.
+All csv-files will be stored in the `data` directory. List below of csv-files created:
+1. df_code_smiles_xyz.csv
+2. df_smile_mol_code.csv
+3. df_buried_vol.csv
 
 ## References
 
