@@ -114,6 +114,20 @@ All csv-files will be stored in the `data` directory. List below of csv-files cr
 2. df_smile_mol_code.csv
 3. df_buried_vol.csv
 
+Before to run the second script, all the closed shell molecules of the dataset should be optimized at GFN2-xTB level of theory, we did it
+with the ``launch_xtb_molecule.sh`` bash script that it can be found is the same folder. The log-file of the optimization and the xyz-file
+of the optimized molecule should be in ``xtb_opt_paton`` directory.
+
+Once this step is done. The fr-BDE is computed using:
+````
+python3 frozen_energies.py
+````
+
+`frozen_energies.py` will start checking if all the optimization finished successfully and is there are minimum due the inspection
+of the frequencies. Then it will generate the frozen radicals (remove a hydrogen) and will launch all the single points in a new directory 
+(`xyz_frozen_paton_rad`). The fr-BDE will be saved in `paton_rxns_fr.csv` file in the data directory. Those calculations can be found
+[here](https://figshare.com/articles/dataset/xTB_calc_paton_dataset_tar_gz/24721473).
+
 ## References
 
 If (parts of) this workflow are used as part of a publication please cite the associated paper:
