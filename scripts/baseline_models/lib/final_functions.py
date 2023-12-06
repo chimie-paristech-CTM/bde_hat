@@ -1,11 +1,12 @@
 #!/usr/bin/python
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+import numpy as np
+from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.ensemble import RandomForestRegressor
 from lib.cross_val import cross_val, cross_val_fp
 from hyperopt import hp
 from lib.bayesian_opt import bayesian_opt
-from lib.bayesian_opt import objective_knn_fp
+from lib.bayesian_opt import objective_knn_fp, objective_knn
 from lib.bayesian_opt import objective_rf, objective_rf_fp
 from lib.bayesian_opt import objective_xgboost, objective_xgboost_fp
 from xgboost import XGBRegressor
@@ -40,10 +41,50 @@ def get_cross_val_accuracy_linear_regression(df, logger, n_fold, split_dir=None)
     """
 
     model = LinearRegression()
-    rmse, mae = cross_val(df, model, n_fold, split_dir=split_dir)
+    rmse, mae, r2 = cross_val(df, model, n_fold, split_dir=split_dir)
 
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for linear regression: {rmse} {mae}')
-    
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2 for linear regression: {rmse} {mae} {r2}')
+
+
+def get_optimal_parameters_knn_desc(df, logger, max_eval=32):
+    """
+    Get the optimal descriptors for KNN (fingerprints) through Bayesian optimization.
+
+    Args:
+        df_fp (pd.DataFrame): input dataframe
+        logger (logging.Logger): logger-object
+        max_eval (int, optional): number of BO evaluations
+
+    returns:
+        Dict: a dictionary containing the optimal parameters
+    """
+    space = {
+        'n_neighbors': hp.quniform('n_neighbors', low=3, high=15, q=2),
+    }
+
+    optimal_parameters = bayesian_opt(df, space, objective_knn, KNeighborsRegressor, max_eval=max_eval)
+    logger.info(f'Optimal parameters for KNN -- fingerprints: {optimal_parameters}')
+
+    return optimal_parameters
+
+
+def get_cross_val_accuracy_knn_desc(df, logger, n_fold, parameters, split_dir=None):
+    """
+    Get the linear regression accuracy in cross-validation.
+
+    Args:
+        df (pd.DataFrame): input dataframe
+        logger (logging.Logger): logger-object
+        n_fold (int): number of folds to use during cross-validation
+        split_dir (str, optional): path to the directory containing the splits. Defaults to None.
+    """
+
+    model = KNeighborsRegressor(n_neighbors=int(parameters['n_neighbors']), weights='distance')
+    rmse, mae, r2 = cross_val(df, model, n_fold, split_dir=split_dir)
+
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2  for k-NN desc: {rmse} {mae} {r2}')
+
+
 def get_optimal_parameters_knn_fp(df_fp, logger, max_eval=32):
     """
     Get the optimal descriptors for KNN (fingerprints) through Bayesian optimization.
@@ -65,6 +106,7 @@ def get_optimal_parameters_knn_fp(df_fp, logger, max_eval=32):
 
     return optimal_parameters
 
+
 def get_cross_val_accuracy_knn_fp(df_fp, logger, n_fold, parameters, split_dir=None):
     """
     Get the linear regression accuracy in cross-validation.
@@ -77,9 +119,10 @@ def get_cross_val_accuracy_knn_fp(df_fp, logger, n_fold, parameters, split_dir=N
     """
 
     model = KNeighborsRegressor(n_neighbors=int(parameters['n_neighbors']), weights='distance')
-    rmse, mae = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
+    rmse, mae, r2 = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
 
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for k-NN: {rmse} {mae}')
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2  for k-NN fingerprints: {rmse} {mae} {r2}')
+
 
 def get_optimal_parameters_rf_descriptors(df, logger, max_eval=32):
     """
@@ -106,6 +149,7 @@ def get_optimal_parameters_rf_descriptors(df, logger, max_eval=32):
 
     return optimal_parameters
 
+
 def get_cross_val_accuracy_rf_descriptors(df, logger, n_fold, parameters, split_dir=None):
     """
     Get the random forest (descriptors) accuracy in cross-validation.
@@ -119,8 +163,9 @@ def get_cross_val_accuracy_rf_descriptors(df, logger, n_fold, parameters, split_
     """
     model = RandomForestRegressor(n_estimators=int(parameters['n_estimators']), 
             max_features=parameters['max_features'], min_samples_leaf=int(parameters['min_samples_leaf']))
-    rmse, mae = cross_val(df, model, n_fold, split_dir=split_dir)
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for RF -- descriptors: {rmse} {mae}')
+    rmse, mae, r2 = cross_val(df, model, n_fold, split_dir=split_dir)
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2  for RF -- descriptors: {rmse} {mae} {r2}')
+
 
 def get_optimal_parameters_rf_fp(df_fp, logger, max_eval=32):
     """
@@ -146,6 +191,7 @@ def get_optimal_parameters_rf_fp(df_fp, logger, max_eval=32):
 
     return optimal_parameters
 
+
 def get_cross_val_accuracy_rf_fps(df_fp, logger, n_fold, parameters, split_dir=None):
     """
     Get the random forest (descriptors) accuracy in cross-validation.
@@ -160,8 +206,9 @@ def get_cross_val_accuracy_rf_fps(df_fp, logger, n_fold, parameters, split_dir=N
     model = RandomForestRegressor(n_estimators=int(parameters['n_estimators']), 
                                 max_features=parameters['max_features'], 
                                 min_samples_leaf=int(parameters['min_samples_leaf']))
-    rmse, mae = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for RF -- fingerprints: {rmse} {mae}')
+    rmse, mae, r2 = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2  for RF -- fingerprints: {rmse} {mae} {r2}')
+
 
 def get_optimal_parameters_xgboost_descriptors(df, logger, max_eval=32):
     """
@@ -203,8 +250,8 @@ def get_cross_val_accuracy_xgboost_descriptors(df, logger, n_fold, parameters, s
                         n_estimators=int(parameters['n_estimators']),
                         learning_rate=parameters['learning_rate'],
                         min_child_weight=parameters['min_child_weight'])
-    rmse, mae = cross_val(df, model, n_fold, split_dir=split_dir)
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for xgboost -- descriptors: {rmse} {mae}')
+    rmse, mae, r2 = cross_val(df, model, n_fold, split_dir=split_dir)
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2 for xgboost -- descriptors: {rmse} {mae} {r2}')
 
 def get_optimal_parameters_xgboost_fp(df_fp, logger, max_eval=32):
     """
@@ -246,5 +293,5 @@ def get_cross_val_accuracy_xgboost_fps(df_fp, logger, n_fold, parameters, split_
                         n_estimators=int(parameters['n_estimators']),
                         learning_rate=parameters['learning_rate'],
                         min_child_weight=parameters['min_child_weight'])
-    rmse, mae = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
-    logger.info(f'{n_fold}-fold CV RMSE and MAE for xgboost -- fingerprints: {rmse} {mae}')
+    rmse, mae, r2 = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
+    logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2 for xgboost -- fingerprints: {rmse} {mae} {r2}')

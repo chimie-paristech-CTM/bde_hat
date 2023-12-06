@@ -4,6 +4,7 @@ from lib.cross_val import cross_val_fp, cross_val
 from hyperopt import fmin, tpe
 from functools import partial
 
+
 def bayesian_opt(df, space, objective, model_class, n_train=0.8, max_eval=32):
     """
     Overarching function for Bayesian optimization
@@ -25,6 +26,28 @@ def bayesian_opt(df, space, objective, model_class, n_train=0.8, max_eval=32):
 
     return best
 
+
+def objective_knn(args_dict, data, model_class):
+    """
+    Objective function for knn Bayesian optimization
+
+    Args:
+        args_dict (dict): dictionary containing the parameters for the RF regressor
+        data (pd.DataFrame): dataframe containing the data points
+        model_class (Model): the abstract model class to initialize in every iteration
+
+    Returns:
+        float: the cross-validation score (RMSE)
+    """
+
+    args = SimpleNamespace(**args_dict)
+    estimator = model_class(n_neighbors=int(args.n_neighbors))
+
+    cval, _, _ = cross_val(data, estimator, 4)
+
+    return cval.mean()
+
+
 def objective_knn_fp(args_dict, data, model_class):
     """
     Objective function for knn Bayesian optimization
@@ -41,7 +64,7 @@ def objective_knn_fp(args_dict, data, model_class):
     args = SimpleNamespace(**args_dict)
     estimator = model_class(n_neighbors=int(args.n_neighbors))
 
-    cval,_ = cross_val_fp(data, estimator, 4)
+    cval, _, _ = cross_val_fp(data, estimator, 4)
 
     return cval.mean() 
 
@@ -62,7 +85,7 @@ def objective_rf(args_dict, data, model_class):
                                 max_features=args.max_features,
                                 min_samples_leaf=int(args.min_samples_leaf),
                                 random_state=2)
-    cval,_ = cross_val(data, estimator, 4)
+    cval, _, _ = cross_val(data, estimator, 4)
 
 
     return cval.mean() 
@@ -84,7 +107,7 @@ def objective_rf_fp(args_dict, data, model_class):
                                     max_features=args.max_features,
                                     min_samples_leaf=int(args.min_samples_leaf),
                                     random_state=2)
-    cval,_ = cross_val_fp(data, estimator, 4)
+    cval, _, _ = cross_val_fp(data, estimator, 4)
 
     return cval.mean() 
 
@@ -106,7 +129,7 @@ def objective_xgboost(args_dict, data, model_class):
                                     learning_rate=args.learning_rate,
                                     min_child_weight=args.min_child_weight,
                                     n_estimators=int(args.n_estimators))
-    cval,_ = cross_val(data, estimator, 4)
+    cval, _, _ = cross_val(data, estimator, 4)
 
     return cval.mean()     
 
@@ -128,6 +151,6 @@ def objective_xgboost_fp(args_dict, data, model_class):
                                     learning_rate=args.learning_rate,
                                     min_child_weight=args.min_child_weight,
                                     n_estimators=int(args.n_estimators))
-    cval,_ = cross_val_fp(data, estimator, 4)
+    cval, _, _ = cross_val_fp(data, estimator, 4)
 
     return cval.mean()

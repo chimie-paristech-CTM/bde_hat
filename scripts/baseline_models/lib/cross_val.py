@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
 
@@ -37,7 +37,7 @@ def create_k_folder(df, n_folds, split_dir) -> None:
     return None
 
 
-def cross_val(df, model, n_folds, target_column='DG_TS', sample=None, split_dir=None):
+def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split_dir=None):
     """
     Function to perform cross-validation
 
@@ -52,7 +52,7 @@ def cross_val(df, model, n_folds, target_column='DG_TS', sample=None, split_dir=
     Returns:
         int: the obtained RMSE and MAE
     """
-    rmse_list, mae_list = [], []
+    rmse_list, mae_list, r2_list = [], [], []
     feature_names = [column for column in df.columns if column not in['rxn_id', 'DG_TS', 'G_r', 'DG_TS_tunn']]
 
     if split_dir == None:
@@ -98,10 +98,15 @@ def cross_val(df, model, n_folds, target_column='DG_TS', sample=None, split_dir=
         mae_fold = mean_absolute_error(target_scaler.inverse_transform(predictions), target_scaler.inverse_transform(y_test))
         mae_list.append(mae_fold)
 
+        r2_fold = r2_score(target_scaler.inverse_transform(y_test), target_scaler.inverse_transform(predictions))
+        r2_list.append(r2_fold)
+
+
     rmse = np.mean(np.array(rmse_list))
     mae = np.mean(np.array(mae_list))
+    r2 = np.mean(np.array(r2_list))
 
-    return rmse, mae
+    return rmse, mae, r2
 
 
 def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
@@ -118,7 +123,7 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
     Returns:
         int: the obtained RMSE
     """
-    rmse_list, mae_list = [], []
+    rmse_list, mae_list, r2_list = [], [], []
 
     if split_dir == None:
         df_fp = df_fp.sample(frac=1, random_state=0)
@@ -163,7 +168,34 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
         mae_fold = mean_absolute_error(target_scaler.inverse_transform(predictions), target_scaler.inverse_transform(y_test))
         mae_list.append(mae_fold)
 
+        r2_fold = r2_score(target_scaler.inverse_transform(y_test), target_scaler.inverse_transform(predictions))
+        r2_list.append(r2_fold)
+
     rmse = np.mean(np.array(rmse_list))
     mae = np.mean(np.array(mae_list))
+    r2 = np.mean(np.array(r2_list))
 
-    return rmse, mae 
+    return rmse, mae, r2
+
+
+def write_predictions(
+        predicted_activation_energies,
+        true_activation_energies,
+        file_name,
+):
+    """Write predictions to a .csv file.
+
+        Args:
+            rxn_id (pd.DataFrame): dataframe consisting of the rxn_ids
+            activation_energies_predicted (List): list of predicted activation energies
+            reaction_energies_predicted (List): list of predicted reaction energies
+            rxn_id_column (str): name of the rxn-id column
+            file_name : name of .csv file to write the predicted values to
+        """
+
+    test_predicted = pd.DataFrame()
+    test_predicted["predicted_activation_energy"] = predicted_activation_energies.tolist()
+    test_predicted["true_activation_energy"] = true_activation_energies.tolist()
+    test_predicted.to_csv(file_name)
+
+    return None
