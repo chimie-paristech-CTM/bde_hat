@@ -50,8 +50,8 @@ def create_input(csv_file, final_dir, conda_env, hmet_confor=r"True"):
 
     for rxn in rxns.itertuples():
 
-        rxn_smile = rxn.rxn_smiles
-        idx = rxn.rxn_id
+        rxn_smile = rxn.reactions
+        idx = rxn.Index
 
         directory = f"rxn_{idx:07}"
         os.mkdir(directory)
@@ -91,14 +91,10 @@ def create_ade_input(rxn_smile, idx, dir, hmet_confor=r"True"):
         in_ade.write(f"ade.Config.hcode=\"G16\"\n")
         in_ade.write(f"ade.Config.lcode =\"xtb\"\n")
         in_ade.write(f"rxn=ade.Reaction(r\"{rxn_smile}\")\n")
-        #in_ade.write(f"rxn=ade.Reaction(r\"{rxn_smile}\", solvent_name = 'water')\n")
         in_ade.write(f"ade.Config.G16.keywords.set_functional('{functional}')\n")
         in_ade.write(f"ade.Config.G16.keywords.set_dispersion({dispersion})\n")
         in_ade.write(f"kwds_sp = ade.Config.G16.keywords.sp\n")
         in_ade.write(f"kwds_sp.append(' stable=opt')\n")
-        #in_ade.write(f"kwds_xtb_low_opt = ade.Config.XTB.keywords.low_opt\n")
-        #in_ade.write(f"kwds_xtb_low_opt.append('--opt')\n")
-        #in_ade.write(f"kwds_xtb_low_opt.append('--iterations 750')\n")
         in_ade.write(f"ade.Config.num_conformers={num_conf}\n")
         in_ade.write(f"ade.Config.rmsd_threshold={rmsd}\n")
         in_ade.write(f"ade.Config.hmethod_conformers={hmet_confor}\n")
@@ -128,7 +124,7 @@ def create_slurm(idx, dir, conda_env):
         in_slurm.write(f"#SBATCH --nodes={nodes}\n")    
         in_slurm.write(f"#SBATCH --ntasks-per-node={tasks_per_node}\n")
         in_slurm.write(f"#SBATCH --cpus-per-task={cpus_per_task}\n")  
-        in_slurm.write('#SBATCH --qos=qos_cpu-t3\n')
+        in_slurm.write('#SBATCH --qos=qos_cpu-t3\n')   
         in_slurm.write('#SBATCH --time=20:00:00\n')
         in_slurm.write('#SBATCH --hint=nomultithread  # Disable hyperthreading\n')
         in_slurm.write(f"#SBATCH --output=ade_{ade_idx}_%j.out\n")   
@@ -145,7 +141,6 @@ def create_slurm(idx, dir, conda_env):
         in_slurm.write(f"export AUTODE_LOG_FILE=ade_{ade_idx}.log\n")
         in_slurm.write(f"python3 ade_{ade_idx}.py \n")
         in_slurm.write(f"python3 aux_script.py \n")
-        #in_slurm.write(f"python3 aux_script_rmechdb.py \n")
 
     return None
 
