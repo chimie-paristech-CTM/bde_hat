@@ -85,8 +85,8 @@ python 3_eckart_potential.py
 ```
 
 The script takes all the necessary information from the autodE resume directory(`autodE_input/0.autode_resume_dir`), the input is the 
-final .csv file of the post-processing step(`reactivity_database.csv`) and the output is `reactivity_database_corrected.csv`, both files
-can be found in the `data` directory.
+final .csv file of the post-processing step(`reactivity_database.csv`), a new column labeled `dG_act_corrected` is added and the output is `reactivity_database_corrected.csv`, both files
+can be found in the `data` directory. 
 
 ## Baseline ML models
 
