@@ -33,6 +33,7 @@ By default, the script generates several `.csv` files in the `data` directory, t
 1. `reactions_2k_autodE.csv`, input for the reaction profile generation workflow.
 2. `subset_30_g16_xtb_autodE.csv`, input for benchmarking.
 3. `reactions_1M.csv`, the chemical space.
+4. `reaction_db_wo_duplicates.csv`, dataset of unique BDE. 
 
 ## High-throughput reaction profile computation
 Input files for high-throughput reaction profile computations, based on the reaction SMILES outputted in the previous section, can be generated 
