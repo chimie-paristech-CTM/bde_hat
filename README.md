@@ -17,7 +17,8 @@ Comments about some libraries installed
 2. [Pebble](https://github.com/noxdafox/pebble): Multiprocessing
 3. [DRFP](https://github.com/reymond-group/drfp): Fingerprints generation
 4. [MORFEUS](https://github.com/digital-chemistry-laboratory/morfeus): Calculation of buried volumes
-5. [autodE](https://github.com/duartegroup/autodE): Calculation of reaction profiles.
+5. [autodE](https://github.com/duartegroup/autodE): Calculation of reaction profiles
+6. [xyz2mol](https://github.com/jensengroup/xyz2mol): Convert cartesian coordinates to RDKit mol object
 
 Additionally, in order to execute the autodE high-throughput reaction profile computation workflow, Gaussian09/Gaussian16 and xTB needs to be accessible. 
 
@@ -65,9 +66,9 @@ relevant files (.log, .xyz, .csv) to a new directory (`0.autode_resume_dir/<rxn_
 
 To summarize all the results in a final .csv file, the `1_summarize_results.py` script is provided. It creates a .csv file containing the successfully 
 computed reaction SMILES together with the activation and reaction free energies (`autode_results.csv`). The workflow can be executed as follow:
-```
+````
 python 1_summarize_results.py
-```
+````
 
 Examples of this can be found in the `autodE_input` directory.
 
@@ -75,6 +76,18 @@ Note that some reactions require postprocessing to make the geometry of the prod
 to avoid some wrong TS. The scripts below have also been included in this repository to facilitate this postprocessing.
 
 ## Post-processing reaction SMILES
+Despite the TS quality checks present in autodE, some erroneous reaction profiles were not recognized as such and consequently, had to 
+be filtered out manually. Once autodE generates the conformers of the TS, the connectivity is not revisited and can lead to erroneous 
+structures. Using the same autodE functions, the graphs for both reactants and TS were generated and the connectivity between 
+every atom was checked. This script can be executed as follows: 
+```
+python check_connectivity.py 
+```
+
+The script will generate a csv-file (`data/df_conn_check.csv`) with the reactions to inspect. The available file is with the inspection done.
+
+
+
 
 ## Tunneling correction
 The script for calculation of tunneling corrections can be found in the same `scripts/autodE` directory and is `3_eckart_potential`. This 
