@@ -23,9 +23,12 @@ Comments about some libraries installed
 Additionally, in order to execute the autodE high-throughput reaction profile computation workflow, Gaussian09/Gaussian16 and xTB needs to be accessible. 
 
 ## Generating the search space and reaction SMILES
-The scripts used for the generation of the various datasets can be found in the `scripts/gen_datasets` directory. For the generation of the HAT chemical space, the
-[radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by [St. John et al.](https://doi.org/10.1038/s41597-020-00588-x) in the 
-`data` directory is needed. Generating the chemical space and sampling a subset of representative reactions is done with the help of:
+The scripts used for the generation of the various datasets can be found in the `scripts/gen_datasets` directory. 
+
+# in-house HAT reactions dataset
+For the generation of the HAT chemical space, the [radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by 
+[St. John et al.](https://doi.org/10.1038/s41597-020-00588-x) in the `data` directory is needed. Generating the chemical space and sampling a 
+subset of representative reactions is done with the help of:
 ```
 python generation_HAT.py
 ```
@@ -36,6 +39,14 @@ By default, the script generates several `.csv` files in the `data` directory, t
 2. `subset_30_g16_xtb_autodE.csv`, input for benchmarking.
 3. `reactions_1M.csv`, the chemical space.
 4. `reaction_db_wo_duplicates.csv`, dataset of unique BDE. 
+
+# Atmospheric chemistry dataset
+A subset of reactions was extracted from the [RMechDB](https://deeprxn.ics.uci.edu/rmechdb/) database compiled by 
+[Tavakoli $\emph{et al.}$](https://doi.org/10.1021/acs.jcim.2c01359). The script for curating the original data can be executed as follow:
+```
+python clean_data_RMechDB.py
+```
+The curated data can be found at `data/RMechDB_clean.csv`.
 
 ## High-throughput reaction profile computation
 Input files for high-throughput reaction profile computations, based on the reaction SMILES outputted in the previous section, can be generated 

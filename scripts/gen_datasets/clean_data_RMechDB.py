@@ -9,7 +9,7 @@ no_paton_data = ["P", "S", "Cl", "Br", "I", "F", "B"]
 
 def filter_data():
 
-    df = pd.read_csv('original_data/all_modified_rmechdb.csv', sep=';')
+    df = pd.read_csv('../../data/all_modified_rmechdb.csv', sep=';')
 
     df_abs = df.loc[df['class_II'] == 'abstraction']
     df_abs = df_abs.loc[df_abs['condition'] == 'Room Temperature']
@@ -31,8 +31,10 @@ def filter_data():
     df_abs.rename(columns={'SMILES': 'rxn_smiles', 'index': 'rxn_id'}, inplace=True)
     df_abs['specific_rxn'] = df_abs['rxn_smiles'].apply(lambda x: filter_rxns(x))
     df_abs['formal_charges'] = df_abs['rxn_smiles'].apply(lambda x: formal_charges(x))
+    df_abs = df_abs.loc[~df_abs['formal_charges']]
+    df_abs = df_abs.loc[~df_abs['no_paton_data']]
 
-    df_abs.to_csv('RMechDB_clean.csv')
+    df_abs.to_csv('../../data/RMechDB_clean.csv')
 
 
 def formal_charges(rxn):
