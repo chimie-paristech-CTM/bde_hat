@@ -89,6 +89,18 @@ The script will generate a csv-file (`data/df_conn_check.csv`) with the reaction
 We subsequently inspected visually the normal modes of all the TSs with imaginary frequencies $(|\nu_{imag}| < 500 cm^{-1})$ and is saved in 
 `data/rxns_freq_500.csv`. 
 
+Lastly, `2_post_processing.py` checks for compatibility between products and TS. In a first step of this script, 
+the coordinates of the subset of atoms in the TS geometry corresponding to the product molecule are extracted. 
+The extracted geometry is then optimized with GFN2-xTB and converted to a SMILES string. If the stereochemistry is not 
+the same for the original product and the SMILES string obtained from the TS geometry, then the latter geometry is 
+fully optimized according to the regular autodE workflow, and the reaction profile is updated. The reactions to be 
+checked are saved in a txt-file (`data/check_TS_stereochemistry`) generated during the first step of this workflow. This
+script can be executed as follows:
+```
+python 2_post_processing.py
+```
+As main output, the script generates a finalized reaction profile folder as well as a .csv file (`data/reactivity_database.csv`)
+with all the reaction SMILES and their computed activation and reaction energies.
 
 ## Tunneling correction
 The script for calculation of tunneling corrections can be found in the same `scripts/autodE` directory and is `3_eckart_potential`. This 
