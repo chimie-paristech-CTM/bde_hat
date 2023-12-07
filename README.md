@@ -62,9 +62,9 @@ python aux_script.py
 ```
 
 In our workflow, the `aux_script.py` is copied into each sub-directories and executed once autodE is finished. This script will copy all 
-relevant files (.log, .xyz, .csv) to a new directory (`0.autode_resume_dir/<rxn_###>`). 
+relevant files (`.log`, `.xyz`, `.csv`) to a new directory (`0.autode_resume_dir/<rxn_###>`). 
 
-To summarize all the results in a final .csv file, the `1_summarize_results.py` script is provided. It creates a .csv file containing the successfully 
+To summarize all the results in a final .csv file, the `1_summarize_results.py` script is provided. It creates a `.csv` file containing the successfully 
 computed reaction SMILES together with the activation and reaction free energies (`autode_results.csv`). The workflow can be executed as follow:
 ````
 python 1_summarize_results.py
@@ -94,12 +94,12 @@ the coordinates of the subset of atoms in the TS geometry corresponding to the p
 The extracted geometry is then optimized with GFN2-xTB and converted to a SMILES string. If the stereochemistry is not 
 the same for the original product and the SMILES string obtained from the TS geometry, then the latter geometry is 
 fully optimized according to the regular autodE workflow, and the reaction profile is updated. The reactions to be 
-checked are saved in a txt-file (`data/check_TS_stereochemistry`) generated during the first step of this workflow. This
+checked are saved in a `.txt` file (`data/check_TS_stereochemistry`) generated during the first step of this workflow. This
 script can be executed as follows:
 ```
 python 2_post_processing.py
 ```
-As main output, the script generates a finalized reaction profile folder as well as a .csv file (`data/reactivity_database.csv`)
+As main output, the script generates a finalized reaction profile folder as well as a `.csv` file (`data/reactivity_database.csv`)
 with all the reaction SMILES and their computed activation and reaction energies.
 
 ## Tunneling correction
@@ -110,10 +110,11 @@ python 3_eckart_potential.py
 ```
 
 The script takes all the necessary information from the autodE resume directory (`autodE_input/0.autode_resume_dir`), the input is the 
-final .csv file of the post-processing step (`reactivity_database.csv`), a new column labeled `dG_act_corrected` is added and the output is `reactivity_database_corrected.csv`, both files can be found in the `data` directory. 
+final `.csv` file of the post-processing step (`reactivity_database.csv`), a new column labeled `dG_act_corrected` is added and the output is `reactivity_database_corrected.csv`, 
+both files can be found in the `data` directory. 
 
 ## Baseline ML models
-All the files related to the baseline models are included in the `script/baseline_models` directory. The baseline_model.py script, 
+All the files related to the baseline models are included in the `script/baseline_models` directory. `The baseline_model.py` script, 
 which runs each of the baseline models sequentially, can be executed as follows:
 ````
 python baseline_models.py [--csv-file <path to the file containing the rxn-smiles>] [--input-file <path to the .pkl input file>] [--split-dir <path to the folder containing the requested splits for the cross validation>] [--n-fold <the number of folds to use during cross validation'>] [--features <features for models based in descriptors>]
@@ -134,9 +135,9 @@ The first step is the calculation of the buried volume. This script can be execu
 python3 buried_vol.py
 ````
 
-This script will extract all the xyz-files from the radical database in the `xyz_paton` directory, create csv-files that map the 
+This script will extract all the xyz-files from the radical database in the `xyz_paton` directory, create `.csv` files that map the 
 xyz-file with the smiles and calculate the buried volume using the [Morfeus](https://github.com/digital-chemistry-laboratory/morfeus) package.
-All csv-files will be stored in the `data` directory. The list of csv-files below is created in this manner:
+All `.csv` files will be stored in the `data` directory. The list of `.csv` files below is created in this manner:
 1. df_code_smiles_xyz.csv
 2. df_smile_mol_code.csv
 3. df_buried_vol.csv
@@ -155,6 +156,15 @@ of the frequencies. Then it will generate the frozen radicals (by removing a hyd
 (`xyz_frozen_paton_rad`). The fr-BDE will be saved in `paton_rxns_fr.csv` file in the data directory. Those calculations can be found
 [here](https://figshare.com/articles/dataset/xTB_calc_paton_dataset_tar_gz/24721473).
 
+## Generate data surrogate model
+In the directory `scripts/surrogate_model`, the script to make the training and test set for the surrogate model can be found. It can be executed
+as follows:
+```
+python create_data_surrogate_model.py
+```
+
+The generated files can be found [here](https://figshare.com/projects/Hydrogen_atom_transfer_reactions/188007)
+
 ## References
 
 If (parts of) this workflow are used as part of a publication please cite the associated paper:
@@ -165,8 +175,8 @@ If (parts of) this workflow are used as part of a publication please cite the as
          author={Javier E. Alfonso-Ramos, Rebecca M. Neeser and Thijs Stuyver},
          journal="{ChemRxiv}",
          year="{2023}",
-         doi="--",
-         url="--"
+         doi="10.26434/chemrxiv-2023-2n281",
+         url="{https://doi.org/10.26434/chemrxiv-2023-2n281}"
 }
 ```
 
