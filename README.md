@@ -25,7 +25,7 @@ Additionally, in order to execute the autodE high-throughput reaction profile co
 ## Generating the search space and reaction SMILES
 The scripts used for the generation of the various datasets can be found in the `scripts/gen_datasets` directory. 
 
-# in-house HAT reactions dataset
+### in-house HAT reactions dataset
 For the generation of the HAT chemical space, the [radical database](https://doi.org/10.6084/m9.figshare.c.4944855.v1) compiled by 
 [St. John et al.](https://doi.org/10.1038/s41597-020-00588-x) in the `data` directory is needed. Generating the chemical space and sampling a 
 subset of representative reactions is done with the help of:
@@ -40,9 +40,9 @@ By default, the script generates several `.csv` files in the `data` directory, t
 3. `reactions_1M.csv`, the chemical space.
 4. `reaction_db_wo_duplicates.csv`, dataset of unique BDE. 
 
-# Atmospheric chemistry dataset
+### Atmospheric chemistry dataset
 A subset of reactions was extracted from the [RMechDB](https://deeprxn.ics.uci.edu/rmechdb/) database compiled by 
-[Tavakoli $\emph{et al.}$](https://doi.org/10.1021/acs.jcim.2c01359). The script for curating the original data can be executed as follow:
+[Tavakoli et al.](https://doi.org/10.1021/acs.jcim.2c01359). The script for curating the original data can be executed as follow:
 ```
 python clean_data_RMechDB.py
 ```
