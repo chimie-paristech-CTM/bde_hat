@@ -86,7 +86,7 @@ python check_connectivity.py
 
 The script will generate a csv-file (`data/df_conn_check.csv`) with the reactions to inspect. The available file is with the inspection done.
 
-We subsequently inspected visually the normal modes of all the TSs with imaginary frequencies $(|$\nu_{imag}$| < 500 cm$^{-1}$)$ and is saved in 
+We subsequently inspected visually the normal modes of all the TSs with imaginary frequencies $(|\nu_{imag}| < 500 cm^{-1})$ and is saved in 
 `data/rxns_freq_500.csv`. 
 
 
