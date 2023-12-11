@@ -56,6 +56,14 @@ python clean_data_tantillo.py
 ```
 The data can be found in the `/data/tantillo_data` directory.
 
+### Alkoxy radicals
+238 computed reaction profiles for alkoxy radicals abstracting hydrogens from hydrocarbons and heterosubstituted compounds in an 
+acetonitrile solution, paper [here](https://doi.org/10.1021/acsomega.2c03252). The script for curating the original data can be executed as follow:
+```
+python clean_data_omega.py
+```
+The data can be found in the `/data/omega_data` directory.
+
 ## High-throughput reaction profile computation
 Input files for high-throughput reaction profile computations, based on the reaction SMILES outputted in the previous section, can be generated 
 with the help of the `0_calculations.py` script in the `scripts/autodE` directory as follows:
