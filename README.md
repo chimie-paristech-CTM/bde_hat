@@ -48,6 +48,14 @@ python clean_data_RMechDB.py
 ```
 The curated data can be found at `data/RMechDB_clean.csv`.
 
+### Tantillo's dataset
+Small dataset of 24 activation energies for HAT by the cytochrome P450 enzyme from organic compound, paper [here](https://chemistry-europe.onlinelibrary.wiley.com/doi/full/10.1002/cmtd.202100108). 
+The script for curating the original data can be executed as follow:
+```
+python clean_data_tantillo.py
+```
+The data can be found in the `/data/tantillo_data` directory.
+
 ## High-throughput reaction profile computation
 Input files for high-throughput reaction profile computations, based on the reaction SMILES outputted in the previous section, can be generated 
 with the help of the `0_calculations.py` script in the `scripts/autodE` directory as follows:
