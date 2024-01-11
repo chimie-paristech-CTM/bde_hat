@@ -11,9 +11,12 @@ conda env create --name <env-name> --file environment.yml
 ```
 
 ### Requirements
-Comments about some libraries installed
+Install BDE from the official repo
 
 1. [BDE](https://github.com/pstjohn/bde): Extracted and analyse radical dataset
+
+Comments about some libraries installed
+
 2. [Pebble](https://github.com/noxdafox/pebble): Multiprocessing
 3. [DRFP](https://github.com/reymond-group/drfp): Fingerprints generation
 4. [MORFEUS](https://github.com/digital-chemistry-laboratory/morfeus): Calculation of buried volumes

@@ -1,0 +1,14 @@
+name: bde
+channels:
+- conda-forge
+dependencies:
+- autode=1.4.1
+- xyz2mol=0.1.2
+- seaborn=0.12.2
+- pebble=5.0.3
+- pip=23.0.1
+- scikit-learn=1.2.2
+- ipykernel=6.23.1
+- drfp=0.2.2
+- pip:
+  - morfeus-ml==0.7.2
