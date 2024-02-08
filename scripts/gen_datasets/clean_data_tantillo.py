@@ -30,6 +30,7 @@ def clean_data():
         all_smiles.append(rad)
 
     data['rxn_smile'] = smi_pairs
+    data = data.drop([2, 7, 14, 16, 20, 21])
     pair_mol_rad = data_steroids['SMILES'].tolist()
     smi_pairs = []
 
