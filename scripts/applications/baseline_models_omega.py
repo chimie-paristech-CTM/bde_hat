@@ -5,7 +5,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import Lasso
 from hyperopt import fmin, tpe
 from functools import partial
 import logging
@@ -158,49 +157,12 @@ def bayesian_opt(df, space, objective, model_class, n_train=0.8, max_eval=32):
     return best
 
 
-def get_optimal_parameters_lasso(df, logger):
-    """
-    Get the optimal descriptors for xgboost (descriptors) through Bayesian optimization.
-
-    Args:
-        df (pd.DataFrame): input dataframe
-        logger (logging.Logger): logger-object
-
-    returns:
-        Dict: a dictionary containing the optimal parameters
-    """
-
-    space = np.arange(0.02, 1, 0.02)
-    df = df.sample(frac=0.8)
-    cval = [cross_val(df, Lasso(alpha=alpha), 4)[0] for alpha in space]
-    optimal_parameters = {'alpha': min(cval)}
-    logger.info(f'Optimal parameters for lasso -- descriptors: {optimal_parameters}')
-
-    return optimal_parameters
-
-
-def get_accuracy_lasso(df_train, df_test, logger, parameters):
-    """
-    Get the xgboost (descriptors) accuracy in cross-validation.
-
-    Args:
-        df_train (pd.DataFrame): train dataframe
-        df_test (pd.DataFrame): test dataframe
-        logger (logging.Logger): logger-object
-        parameters (Dict): a dictionary containing the parameters to be used
-    """
-
-    model = Lasso(alpha=(parameters['alpha']))
-    rmse, mae = final_eval(df_train, df_test, model)
-    logger.info(f'RMSE and MAE for LASSO -- descriptors: {rmse} {mae}')
-
-
 def get_accuracy_linear_regression(df_train, df_test, logger):
 
     model = LinearRegression()
-    rmse, mae, r2, ev = final_eval(df_train, df_test, model)
+    rmse, mae, r2 = final_eval(df_train, df_test, model)
 
-    logger.info(f'RMSE, MAE, R^2 and explained variance for linear regression: {rmse} {mae} {r2} {ev}')
+    logger.info(f'RMSE, MAE, and R^2 for linear regression: {rmse} {mae} {r2}')
 
 
 def create_logger() -> logging.Logger:
