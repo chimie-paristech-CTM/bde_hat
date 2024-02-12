@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import logging
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 def create_logger() -> logging.Logger:
     """
@@ -27,3 +29,17 @@ def create_logger() -> logging.Logger:
     logger.addHandler(ch)
 
     return logger
+
+def delta_target(train, test):
+
+    X = np.array(train['dG_rxn'].values.tolist()).reshape(-1, 1)
+    y = np.array(train['DG_TS_tunn'].values.tolist()).reshape(-1, 1)
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    for data in [train, test]:
+        data['DG_TS_tunn_linear'] = model.predict(data[['dG_rxn']])
+        data['ddG_TS_tunn'] = data['DG_TS_tunn'] - data['DG_TS_tunn_linear']
+
+    return train, test

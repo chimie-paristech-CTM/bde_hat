@@ -192,7 +192,7 @@ def get_optimal_parameters_rf_fp(df_fp, logger, max_eval=32):
     return optimal_parameters
 
 
-def get_cross_val_accuracy_rf_fps(df_fp, logger, n_fold, parameters, split_dir=None):
+def get_cross_val_accuracy_rf_fps(df_fp, logger, n_fold, parameters, split_dir=None, delta=False):
     """
     Get the random forest (descriptors) accuracy in cross-validation.
 
@@ -206,7 +206,7 @@ def get_cross_val_accuracy_rf_fps(df_fp, logger, n_fold, parameters, split_dir=N
     model = RandomForestRegressor(n_estimators=int(parameters['n_estimators']), 
                                 max_features=parameters['max_features'], 
                                 min_samples_leaf=int(parameters['min_samples_leaf']))
-    rmse, mae, r2 = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir)
+    rmse, mae, r2 = cross_val_fp(df_fp, model, n_fold, split_dir=split_dir, delta=delta)
     logger.info(f'{n_fold}-fold CV RMSE, MAE and R^2  for RF -- fingerprints: {rmse} {mae} {r2}')
 
 

@@ -22,7 +22,7 @@ def get_fingerprints_all_rxn_1(df):
 
     return dr
 
-def get_fingerprints_all_rxn(df):
+def get_fingerprints_all_rxn(df, delta=False):
 
     rxns = df.rxn_smiles.tolist()
     all_rxn_fps = []
@@ -33,5 +33,7 @@ def get_fingerprints_all_rxn(df):
     
     dr = pd.DataFrame([s for s in all_rxn_fps], columns=['Fingerprints'])
     dr[['rxn_id', 'G_r', 'DG_TS', 'DG_TS_tunn']] = df[['rxn_id', 'G_r', 'DG_TS', 'DG_TS_tunn']]
+    if delta:
+        dr['dG_rxn'] = df['dG_rxn']
 
     return dr

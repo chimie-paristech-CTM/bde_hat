@@ -27,6 +27,8 @@ parser.add_argument('--features', nargs="+", type=str, default=['dG_forward', 'd
                                                                 's_prod0', 'q_prod1', 'qH_prod1', 'BV_reac1',
                                                                 'BV_prod0', 'fr_dG_forward', 'fr_dG_reverse'],
                     help='features for the different models')
+parser.add_argument('--delta', action="store_true", default=False,
+                    help='delta model')
 # interactive way
 parser.add_argument("--mode", default='client', action="store", type=str)
 parser.add_argument("--host", default='127.0.0.1', action="store", type=str)
@@ -39,7 +41,11 @@ if __name__ == '__main__':
     logger = create_logger()
     df = prepare_df(args.input_file, args.features)
     df_rxn_smiles = pd.read_csv(args.csv_file, index_col=0)
-    df_fps = get_fingerprints_all_rxn(df_rxn_smiles)
+    if args.delta:
+        df_rxn_smiles['dG_rxn'] = df['dG_forward'] - df['dG_reverse']
+        df_fps = get_fingerprints_all_rxn(df_rxn_smiles, delta=True)
+    else:
+        df_fps = get_fingerprints_all_rxn(df_rxn_smiles)
     n_fold = args.n_fold
     split_dir = args.split_dir
     features = args.features
@@ -63,6 +69,11 @@ if __name__ == '__main__':
     # RF fingerprints
     optimal_parameters_rf_fps = get_optimal_parameters_rf_fp(df_fps, logger, max_eval=64)
     get_cross_val_accuracy_rf_fps(df_fps, logger, n_fold, optimal_parameters_rf_fps, split_dir)
+
+    if args.delta:
+        # RF fingerprints delta
+        optimal_parameters_rf_fps = {'max_features': 0.1, 'min_samples_leaf': 20, 'n_estimators': 30}
+        get_cross_val_accuracy_rf_fps(df_fps, logger, n_fold, optimal_parameters_rf_fps, split_dir, delta=True)
 
     # XGboost descriptors
     optimal_parameters_xgboost_descs = get_optimal_parameters_xgboost_descriptors(df, logger, max_eval=128)

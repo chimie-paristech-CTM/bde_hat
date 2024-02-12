@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import StandardScaler
+from lib.utils import delta_target
 
 
 def create_k_folder(df, n_folds, split_dir) -> None:
@@ -73,6 +74,7 @@ def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split
             df_train = df[df['train'] == True]
             df_test = df[df['train'] == False]
 
+
         X_train, y_train = df_train[feature_names], df_train[[target_column]]
         X_test, y_test = df_test[feature_names], df_test[[target_column]]
 
@@ -109,7 +111,7 @@ def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split
     return rmse, mae, r2
 
 
-def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
+def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None, delta=False):
     """
     Function to perform cross-validation with fingerprints
 
@@ -141,6 +143,9 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
             df_train = df_fp[df_fp['train'] == True]
             df_test = df_fp[df_fp['train'] == False]
 
+        if delta:
+            df_train, df_test = delta_target(df_train, df_test)
+
         y_train = df_train[[target_column]]
         y_test = df_test[[target_column]]
 
@@ -161,6 +166,7 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None):
         model.fit(X_train, y_train.ravel())
         predictions = model.predict(X_test)
         predictions = predictions.reshape(-1,1)
+
 
         rmse_fold = np.sqrt(mean_squared_error(target_scaler.inverse_transform(predictions), target_scaler.inverse_transform(y_test)))
         rmse_list.append(rmse_fold)
