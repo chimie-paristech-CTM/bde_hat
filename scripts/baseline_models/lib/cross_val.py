@@ -38,7 +38,7 @@ def create_k_folder(df, n_folds, split_dir) -> None:
     return None
 
 
-def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split_dir=None):
+def cross_val(df, model, n_folds, logger=None, target_column='DG_TS_tunn', sample=None, split_dir=None):
     """
     Function to perform cross-validation
 
@@ -46,6 +46,7 @@ def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split
         df (pd.DataFrame): the DataFrame containing features and targets
         model (sklearn.Regressor): An initialized sklearn model
         n_folds (int): the number of folds
+        logger (logger): log-file for output
         target_column (str): target column
         sample(int): the size of the subsample for the training set (default = None)
         split_dir (str): the path to a directory containing data splits. If None, random splitting is performed.
@@ -103,6 +104,9 @@ def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split
         r2_fold = r2_score(target_scaler.inverse_transform(y_test), target_scaler.inverse_transform(predictions))
         r2_list.append(r2_fold)
 
+        if logger:
+            logger.info(f' {i} fold of {n_folds}-fold CV RMSE, MAE and R^2: {rmse_fold} {mae_fold} {r2_fold}')
+
 
     rmse = np.mean(np.array(rmse_list))
     mae = np.mean(np.array(mae_list))
@@ -111,7 +115,7 @@ def cross_val(df, model, n_folds, target_column='DG_TS_tunn', sample=None, split
     return rmse, mae, r2
 
 
-def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None, delta=False):
+def cross_val_fp(df_fp, model, n_folds, logger=None, target_column='DG_TS', split_dir=None, delta=False):
     """
     Function to perform cross-validation with fingerprints
 
@@ -119,6 +123,7 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None, d
         df_fp (pd.DataFrame): the DataFrame containing fingerprints and targets
         model (sklearn.Regressor): An initialized sklearn model
         n_folds (int): the number of folds
+        logger (logger): log-file for output
         target_column (str): target column
         split_dir (str): the path to a directory containing data splits. If None, random splitting is performed.
 
@@ -176,6 +181,9 @@ def cross_val_fp(df_fp, model, n_folds, target_column='DG_TS', split_dir=None, d
 
         r2_fold = r2_score(target_scaler.inverse_transform(y_test), target_scaler.inverse_transform(predictions))
         r2_list.append(r2_fold)
+
+        if logger:
+            logger.info(f' {i} fold of {n_folds}-fold CV RMSE, MAE and R^2: {rmse_fold} {mae_fold} {r2_fold}')
 
     rmse = np.mean(np.array(rmse_list))
     mae = np.mean(np.array(mae_list))
