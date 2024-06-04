@@ -203,10 +203,13 @@ If (parts of) this workflow are used as part of a publication please cite the as
          title={Repurposing QM Descriptor Datasets for on the Fly Generation of Informative Reaction Representations: 
          Application to Hydrogen Atom Transfer Reactions}, 
          author={Javier E. Alfonso-Ramos, Rebecca M. Neeser and Thijs Stuyver},
-         journal="{ChemRxiv}",
-         year="{2023}",
-         doi="10.26434/chemrxiv-2023-2n281",
-         url="{https://doi.org/10.26434/chemrxiv-2023-2n281}"
+         journal="{Digital Discovery}",
+         year="{2024}",
+         volume="{3}",
+         issue="{5}",
+         pages="{919-931}"
+         doi="10.1039/D4DD00043A",
+         url="{https://doi.org/10.1039/D4DD00043A}"
 }
 ```
 
